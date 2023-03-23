@@ -1,0 +1,25 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="TO_DO.TO_DO.urls.users" />
+          <option value="to_do.To_Do.TO_DO.urls.users" />
+          <option value="TO_DO.TO_DO.projects.models.users" />
+          <option value="rest_framework.serializers.SlugRelatedFieldField" />
+          <option value="TO_DO.TO_DO.TO_DO.urls.UserModelViewSet" />
+          <option value="TO_DO.TO_DO.TO_DO.urls.TODOModelViewSet" />
+          <option value="TO_DO.TO_DO.users.views.ProjectModelViewSet" />
+          <option value="TO_DO.TO_DO.projects.models.User" />
+          <option value="TO_DO.TO_DO.projects.serializers.UserSerializer" />
+          <option value="TO_DO.TO_DO.TO_DO.urls.projects" />
+          <option value="TO_DO.TO_DO.TO_DO.urls.ProjectModelViewSet" />
+          <option value="TO_DO.TO_DO.projects.views.JSONRender" />
+          <option value="TO_DO.TO_DO.urls.projects" />
+          <option value="TO_DO.TO_DO.users.models.User.objects" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
