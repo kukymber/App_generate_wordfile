@@ -46,14 +46,17 @@ class App(tk.Tk):
         self.name_fields()
         # Creating the "Who Gave Passport" field with multiple selections
         self.who_gave_passport_field()
+        self.selected_who_gave = []
         # Creating the fields for passport series and number
         self.passport_series_number_fields()
+        self.selected_seria = []
+        self.passport_number_fields()
         # Adding the canvas for the image
         self.canvas = tk.Canvas(self, width=400, height=600)
         self.canvas.grid(column=2, row=0, rowspan=7, padx=10, pady=10)
         # Loading and displaying the image
         self.show_image()
-
+        self.generate_word_file()
         self.generate_word_file_button()
 
     def name_fields(self):
@@ -88,15 +91,16 @@ class App(tk.Tk):
 
         def save_choose_data_button():
             # Get the selected items from the listbox
-            selected_items = [listbox.get(i) for i in listbox.curselection()]
+            selected_who_dave = [listbox.get(i) for i in listbox.curselection()]
+            self.selected_who_gave = selected_who_dave
 
-            if not selected_items:
+            if not selected_who_dave:
                 # If no items are selected, show an error message and return
                 messagebox.showerror("Error", "Please select at least one item.")
                 return
 
             # Do something with the selected items here, for example, save them to a file
-            print("Selected items:", selected_items)
+            print("Selected items:", selected_who_dave)
 
         # Create the "Generate choose data" button and bind it to the save_choose_data_button function
         button = ttk.Button(self, text='Generate choose data', command=save_choose_data_button)
@@ -131,20 +135,21 @@ class App(tk.Tk):
 
         def save_choose_seria_button():
             # Get the selected items from the listbox
-            selected_items = [entry_series.get(i) for i in entry_series.curselection()]
-
-            if not selected_items:
+            selected_seria = [entry_series.get(i) for i in entry_series.curselection()]
+            self.selected_seria = selected_seria
+            if not selected_seria:
                 # If no items are selected, show an error message and return
                 messagebox.showerror("Error", "Please select at least one item.")
                 return
 
             # Do something with the selected items here, for example, save them to a file
-            print("Selected items:", selected_items)
+            print("Selected items:", selected_seria)
 
         # Create the "Generate choose data" button and bind it to the save_choose_data_button function
         button = ttk.Button(self, text='Generate choose data', command=save_choose_seria_button)
         button.grid(column=1, row=7, columnspan=1)
 
+    def passport_number_fields(self):
         label_number = ttk.Label(self, text="Passport Number:")
         label_number.grid(column=0, row=8, padx=10, pady=10)
 
@@ -176,16 +181,20 @@ class App(tk.Tk):
             'first_name': self.name_fields[0].get(),
             'middle_name': self.name_fields[1].get(),
             'last_name': self.name_fields[2].get(),
-            'who_gave_passport': ', '.join(self.who_gave_passport_field.save_choose_data_button.se),
+            'who_gave_passport': ', '.join(self.selected_who_gave),
             'date_of_birth': self.date_of_birth_field.get(),
-            'passport_series': ', '.join([self.passport_series_number_fields.get(idx) for idx in
-                                          self.passport_series_number_fields.curselection()]),
-            'passport_number': self.passport_number_field.get()
+            'passport_series': ', '.join(self.selected_seria),
+            'passport_number': self.passport_number_fields.get()
         }
+
+        # Render the template with the context
         template.render(context)
 
         # Save the Word file
         template.save('output.docx')
+
+        # Show a message box to inform the user that the file has been generated
+        messagebox.showinfo("File Generated", "The Word file has been generated successfully.")
 
 
 if __name__ == "__main__":
