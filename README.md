@@ -12,13 +12,13 @@ This is a python application that allows users to extract data from an image of 
 
 To use this application, you will need to have Python 3 installed on your system along with the following libraries:
 
-pip install tkinter opencv-python pytesseract Pillow docxtpl/
+		pip install tkinter opencv-python pytesseract Pillow docxtpl/
 
 #### Usage
 
 To use the application, run the following command:
 
-python app.py/
+		python app.py
 
 This will open the user interface. Click the "Open Image" button to choose an image of a passport. The application will then extract the data from the image and display it in the appropriate fields.
 
