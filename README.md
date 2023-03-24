@@ -1,29 +1,24 @@
-Tkinter App
+## Tkinter App
 
-This is a Python application that allows users to extract data from an image of a passport and generate a Word file with the extracted data. The application uses the Tkinter library for the user interface, OpenCV for image processing, Pytesseract for optical character recognition, and docxtpl for generating the Word file.
-Installation
+This is a python application that allows users to extract data from an image of a passport and generate a word file with the extracted data. the application uses the following libraries:
+
+- Tkinter: For the user interface
+- OpenCV: For image processing
+- Pytesseract: For optical character recognition
+- Pillow: For image manipulation
+- docxtpl: For generating the Word file.
+
+> Installation
 
 To use this application, you will need to have Python 3 installed on your system along with the following libraries:
 
-    tkinter
-    OpenCV
-    Pytesseract
-    Pillow
-    docxtpl
+> pip install tkinter opencv-python pytesseract Pillow docxtpl
 
-You can install these libraries using pip by running the following command:
-
-python
-
-pip install tkinter opencv-python pytesseract Pillow docxtpl
-
-Usage
+#### Usage
 
 To use the application, run the following command:
 
-python
-
-python app.py
+> python app.py
 
 This will open the user interface. Click the "Open Image" button to choose an image of a passport. The application will then extract the data from the image and display it in the appropriate fields.
 
