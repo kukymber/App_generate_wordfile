@@ -8,41 +8,6 @@ import re
 from PIL import Image, ImageTk
 from docxtpl import DocxTemplate
 
-path = "/home/anatolii/python_project/pythonProject9/passport.jpg"
-
-# Reading an image in default mode
-img = cv2.imread(path)
-
-# Rotate image for scan numbers
-img2 = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
-
-# Read image and translate in text and numbers
-text = pytesseract.image_to_string(img, lang="rus")
-numbers = pytesseract.image_to_string(img2, lang="rus")
-
-# Create lists with data
-word_list = text.split()
-numbers_list = numbers.split()
-
-seria = [elem for elem in word_list if any(char.isalpha() for char in elem)]
-
-# Filter list with data
-num_list = [num for num in filter(
-    lambda num: num.isnumeric(), numbers_list)]
-
-words_list = [word for word in filter(
-    lambda word: word.isalpha(), word_list)]
-
-# take date of brith from text (default image)
-date_of_birth = re.findall("\d{2}[./,]?\d{2}[./,]?\d{4}", text)
-
-
-def open_image(self):
-    file_path = filedialog.askopenfilename()
-    if file_path:
-        image = cv2.imread(file_path)
-        App(image, file_path)
-
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -52,6 +17,10 @@ class App(tk.Tk):
         self.passport_number = None
         self.title("Tkinter App")
         self.geometry("800x800")
+
+        # Open the image and extract data
+        self.open_image()
+
         # Creating the date of birth field
         self.date_of_birth_field()
 
@@ -74,7 +43,61 @@ class App(tk.Tk):
         self.show_image()
         self.generate_word_file_button()
 
+    def open_image(self):
+        # Show file dialog to choose image
+        file_path = filedialog.askopenfilename()
+        if file_path:
+            # Reading an image in default mode
+            img = cv2.imread(file_path)
 
+            # Rotate image for scan numbers
+            img2 = cv2.rotate(img, cv2.ROTATE_90_COUNTERCLOCKWISE)
+
+            # Read image and translate in text and numbers
+            text = pytesseract.image_to_string(img, lang="rus")
+            numbers = pytesseract.image_to_string(img2, lang="rus")
+
+            # Create lists with data
+            word_list = text.split()
+            numbers_list = numbers.split()
+
+            seria = [elem for elem in word_list if any(char.isalpha() for char in elem)]
+
+            def filter_objects(lst):
+                result = []
+                # iterate over each element in the list
+                for element in lst:
+                    # remove non-letter characters from the element
+                    element = ''.join(filter(str.isalpha, element))
+                    # check if the filtered element starts with a letter and ends with a letter
+                    if element and element[0].isalpha() and element[-1].isalpha():
+                        # check if the length of the element is greater than 1
+                        if len(element) > 2:
+                            # if it is, append it to the result list (if it's not already there)
+                            if element not in result:
+                                result.append(element)
+                # sort the result list in alphabetical order and then reverse the order
+                result = sorted(result, key=str.lower, reverse=True)
+                return result
+
+            # Filter list with data
+            num_list = [num for num in filter(
+                lambda num: num.isnumeric(), numbers_list)]
+
+            words_list = filter_objects(word_list)
+
+
+            # take date of birth from text (default image)
+            date_of_birth = re.findall("\d{2}[./,]?\d{2}[./,]?\d{4}", text)
+
+            # Assign extracted data to class variables
+            self.image_path = file_path
+            self.text = text
+            self.numbers = numbers
+            self.seria = seria
+            self.num_list = num_list
+            self.words_list = words_list
+            self.date_of_birth = date_of_birth
 
     def name_fields(self):
         self.name_combos = []
@@ -82,7 +105,7 @@ class App(tk.Tk):
             label = ttk.Label(self, text=f"{['First', 'Middle', 'Last'][i]} Name:")
             label.grid(column=0, row=i, padx=10, pady=10)
 
-            combo = ttk.Combobox(self, values=words_list[::-1], state="normal")
+            combo = ttk.Combobox(self, values=self.words_list[::-1], state="normal")
             combo.grid(column=1, row=i, padx=10, pady=10)
             self.name_combos.append(combo)
 
@@ -91,9 +114,6 @@ class App(tk.Tk):
 
     def on_select_name(self, event, index):
         pass
-        # Get the selected item from the combobox
-        # selected_item = self.name_combos[index].get()
-        # print(selected_item)
 
     def who_gave_passport_field(self):
         label = ttk.Label(self, text="Who Gave Passport:")
@@ -103,15 +123,13 @@ class App(tk.Tk):
         listbox.grid(column=1, row=3, padx=10, pady=10)
 
         def on_select(event=None):
-            # Get the selected items from the listbox and format them as a comma-separated string
-            selected_items = ', '.join([listbox.get(i) for i in listbox.curselection()])
-            print("Selected items:", selected_items)
+            pass
 
         # Bind the on_select function to the ListboxSelect event
         listbox.bind("<<ListboxSelect>>", on_select)
 
         # Populate the listbox with data from the seria list
-        for item in seria:
+        for item in self.seria:
             listbox.insert(tk.END, item)
 
         def save_choose_data_button():
@@ -124,8 +142,6 @@ class App(tk.Tk):
                 messagebox.showerror("Error", "Please select at least one item.")
                 return
 
-            # Do something with the selected items here, for example, save them to a file
-            print("Selected items:", selected_who_dave)
 
         # Create the "Generate choose data" button and bind it to the save_choose_data_button function
         button = ttk.Button(self, text='Generate choose data', command=save_choose_data_button)
@@ -136,9 +152,8 @@ class App(tk.Tk):
         label.grid(column=0, row=5, padx=10, pady=10)
 
         self.dob_entry = ttk.Entry(self, state='ACTIVE')
-        self.dob_entry.insert(0, string=date_of_birth[0])
+        self.dob_entry.insert(0, string=self.date_of_birth[0])
         self.dob_entry.grid(column=1, row=5, padx=10, pady=10)
-
 
     def passport_series_number_fields(self):
         label_series = ttk.Label(self, text="Passport Series:")
@@ -148,13 +163,11 @@ class App(tk.Tk):
         entry_series.grid(column=1, row=6, padx=5, pady=5)
 
         # Populate the listbox with data from the seria list
-        for item in num_list:
+        for item in self.num_list:
             entry_series.insert(tk.END, item)
 
         def on_select_seria(event=None):
-            # Get the selected items from the listbox and format them as a comma-separated string
-            selected_items = ', '.join([entry_series.get(i) for i in entry_series.curselection()])
-            print("Selected items:", selected_items)
+            pass
 
         # Bind the on_select function to the ListboxSelect event
         entry_series.bind("<<ListboxSelect>>", on_select_seria)
@@ -168,9 +181,6 @@ class App(tk.Tk):
                 messagebox.showerror("Error", "Please select at least one item.")
                 return
 
-            # Do something with the selected items here, for example, save them to a file
-            print("Selected items:", selected_seria)
-
         # Create the "Generate choose data" button and bind it to the save_choose_data_button function
         button = ttk.Button(self, text='Generate choose data', command=save_choose_seria_button)
         button.grid(column=1, row=7, columnspan=1)
@@ -179,13 +189,12 @@ class App(tk.Tk):
         label_number = ttk.Label(self, text="Passport Number:")
         label_number.grid(column=0, row=8, padx=10, pady=10)
 
-        self.entry_number = ttk.Combobox(self, values=num_list, state="normal")
+        self.entry_number = ttk.Combobox(self, values=self.num_list, state="normal")
         self.entry_number.grid(column=1, row=8, padx=10, pady=10)
-
 
     def show_image(self):
         # Load the image using PIL library
-        image = Image.open(path)
+        image = Image.open(self.image_path)
         # Resize the image to fit the canvas
         image = image.resize((400, 600), Image.ANTIALIAS)
         # Convert the PIL image to tkinter-compatible format
@@ -215,7 +224,6 @@ class App(tk.Tk):
             'passport_number': self.entry_number.get()
         }
 
-
         # Render the template with the context
         template.render(context)
 
@@ -227,5 +235,5 @@ class App(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = open_image()
+    app = App()
     app.mainloop()
