@@ -92,3 +92,27 @@ class App(tk.Tk, words_list):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+
+
+    def first_name_fields(self):
+        label = ttk.Label(self, text=f"First Name:")
+        label.grid(column=0, row=1, padx=10, pady=10)
+
+        combo = ttk.Combobox(self, values=words_list[::-1], state="normal")
+        combo.grid(column=1, row=1, padx=10, pady=10)
+
+
+    def middle_name_fields(self):
+        label = ttk.Label(self, text=f"Middle Name:")
+        label.grid(column=0, row=2, padx=10, pady=10)
+
+        combo = ttk.Combobox(self, values=words_list[::-1], state="normal")
+        combo.grid(column=1, row=2, padx=10, pady=10)
+
+
+    def last_name_fields(self):
+        label = ttk.Label(self, text=f"Last Name:")
+        label.grid(column=0, row=3, padx=10, pady=10)
+
+        combo = ttk.Combobox(self, values=words_list[::-1], state="normal")
+        combo.grid(column=1, row=3, padx=10, pady=10)
