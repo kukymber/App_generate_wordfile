@@ -1,4 +1,6 @@
 import os
+import subprocess
+import sys
 import tkinter as tk
 from tkinter import ttk, Canvas, messagebox
 from tkinter import filedialog
@@ -62,10 +64,18 @@ class App(tk.Tk):
 
     def open_word_file(self):
         # Get the path to the generated Word file
-        file_path = "output.docx"  # Change this to the actual path of your generated Word file
+        file_path = "output.docx" # Change this to the actual path of your generated Word file
         if os.path.exists(file_path):
-            # Open the file using the default application for .docx files
-            os.startfile(file_path)
+            # Open the file in an installed Word viewer
+            if sys.platform == "win32":
+                # On Windows, use the start command to open the file in Word
+                subprocess.Popen(['start', '', file_path], shell=True)
+            elif sys.platform == "darwin":
+                # On macOS, use the open command to open the file in Word
+                subprocess.Popen(['open', '-a', 'Microsoft Word', file_path])
+            else:
+                # On other platforms, use the xdg-open command to open the file in the default viewer
+                subprocess.Popen(['xdg-open', file_path])
         else:
             messagebox.showerror("Error", "The generated Word file does not exist.")
 
@@ -176,7 +186,7 @@ class App(tk.Tk):
 
 
         # Create the "Generate choose data" button and bind it to the save_choose_data_button function
-        button = ttk.Button(self, text='Generate choose data', command=save_choose_data_button)
+        button = ttk.Button(self, text='Choose data', command=save_choose_data_button)
         button.grid(column=1, row=4, columnspan=1)
 
     def date_of_birth_field(self):
@@ -214,7 +224,7 @@ class App(tk.Tk):
                 return
 
         # Create the "Generate choose data" button and bind it to the save_choose_data_button function
-        button = ttk.Button(self, text='Generate choose data', command=save_choose_seria_button)
+        button = ttk.Button(self, text='Choose data', command=save_choose_seria_button)
         button.grid(column=1, row=7, columnspan=1)
 
     def passport_number_fields(self):
@@ -260,7 +270,7 @@ class App(tk.Tk):
         template.render(context)
 
         # Save the Word file
-        template.save('outpsut.docx')
+        template.save('output.docx')
 
         # Show a message box to inform the user that the file has been generated
         messagebox.showinfo("File Generated", "The Word file has been generated successfully.")
