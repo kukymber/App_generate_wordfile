@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from tkinter import ttk, Canvas, messagebox
 from tkinter import filedialog
@@ -16,7 +17,7 @@ class App(tk.Tk):
         self.entry_number = None
         self.passport_number = None
         self.title("Tkinter App")
-        self.geometry("800x800")
+        self.geometry("900x800")
 
         # Open the image and extract data
         self.open_image()
@@ -29,19 +30,50 @@ class App(tk.Tk):
 
         # Creating the "Who Gave Passport" field with multiple selections
         self.who_gave_passport_field()
-        self.selected_who_gave = ["", "", ""]
+        # self.selected_who_gave = ["", "", ""]
 
         # Creating the fields for passport series and number
         self.passport_series_number_fields()
-        self.selected_seria = []
+        # self.selected_seria = []
         self.passport_number_fields()
 
         # Adding the canvas for the image
         self.canvas = tk.Canvas(self, width=400, height=600)
         self.canvas.grid(column=2, row=0, rowspan=7, padx=10, pady=10)
+
         # Loading and displaying the image
         self.show_image()
+
+        # Adding the button for selecting the template file
+        self.selected_template_path = tk.StringVar()
+        self.select_template_button = ttk.Button(self, text="Select Template", command=self.select_template_file)
+        self.select_template_button.grid(column=0, row=9, padx=10, pady=10)
+        self.selected_template_label = ttk.Label(self, textvariable=self.selected_template_path)
+        self.selected_template_label.grid(column=1, row=9, padx=10, pady=10)
+
         self.generate_word_file_button()
+
+        # Adding the button for opening the generated Word file
+        self.style = ttk.Style()
+        self.style.configure("Large.TButton", font=("TkDefaultFont", 12))
+        self.open_word_file_button = ttk.Button(self, text="Open Generated Word File", style="Large.TButton",
+                                                command=self.open_word_file)
+        self.open_word_file_button.grid(column=1, row=10, padx=10, pady=10)
+
+    def open_word_file(self):
+        # Get the path to the generated Word file
+        file_path = "output.docx"  # Change this to the actual path of your generated Word file
+        if os.path.exists(file_path):
+            # Open the file using the default application for .docx files
+            os.startfile(file_path)
+        else:
+            messagebox.showerror("Error", "The generated Word file does not exist.")
+
+    def select_template_file(self):
+        # Show file dialog to choose a Docx file
+        file_path = filedialog.askopenfilename(filetypes=[("Word Document", "*.docx"), ("All Files", "*.*")])
+        if file_path:
+            self.selected_template_path.set(os.path.basename(file_path))
 
     def open_image(self):
         # Show file dialog to choose image
