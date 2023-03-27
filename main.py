@@ -34,12 +34,10 @@ class App(tk.Tk):
 
         # Creating the "Who Gave Passport" field with multiple selections
         self.who_gave_passport_field()
-        # self.selected_who_gave = ["", "", ""]
 
         # Creating the fields for passport series and number
         self.passport_series_number_fields()
-        # self.selected_seria = []
-        self.passport_number_fields()
+        # self.selected_seria = []        self.passport_number_fields()
 
         # Adding the canvas for the image
         self.canvas = tk.Canvas(self, width=400, height=600)
