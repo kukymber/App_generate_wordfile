@@ -11,9 +11,11 @@ import re
 from PIL import Image, ImageTk
 from docxtpl import DocxTemplate
 
+
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
+        self.template_file_path = None
         self.dob_entry = None
         self.name_combos = None
         self.entry_number = None
@@ -64,7 +66,7 @@ class App(tk.Tk):
 
     def open_word_file(self):
         # Get the path to the generated Word file
-        file_path = "output.docx" # Change this to the actual path of your generated Word file
+        file_path = "output.docx"  # Change this to the actual path of your generated Word file
         if os.path.exists(file_path):
             # Open the file in an installed Word viewer
             if sys.platform == "win32":
@@ -81,9 +83,9 @@ class App(tk.Tk):
 
     def select_template_file(self):
         # Show file dialog to choose a Docx file
-        file_path = filedialog.askopenfilename(filetypes=[("Word Document", "*.docx"), ("All Files", "*.*")])
-        if file_path:
-            self.selected_template_path.set(os.path.basename(file_path))
+        self.template_file_path = filedialog.askopenfilename(filetypes=[("Word Document", "*.docx"), ("All Files", "*.*")])
+        if self.template_file_path:
+            self.selected_template_path.set(os.path.basename(self.template_file_path))
 
     def open_image(self):
         # Show file dialog to choose image
@@ -127,7 +129,6 @@ class App(tk.Tk):
                 lambda num: num.isnumeric(), numbers_list)]
 
             words_list = filter_objects(word_list)
-
 
             # take date of birth from text (default image)
             date_of_birth = re.findall("\d{2}[./,]?\d{2}[./,]?\d{4}", text)
@@ -183,7 +184,6 @@ class App(tk.Tk):
                 # If no items are selected, show an error message and return
                 messagebox.showerror("Error", "Please select at least one item.")
                 return
-
 
         # Create the "Generate choose data" button and bind it to the save_choose_data_button function
         button = ttk.Button(self, text='Choose data', command=save_choose_data_button)
@@ -253,7 +253,7 @@ class App(tk.Tk):
     def generate_word_file(self):
         selected_items = [combo.get() for combo in self.name_combos]
         # Read the template file
-        template = DocxTemplate('/home/anatolii/python_project/pythonProject9/template.docx')
+        template = DocxTemplate(self.template_file_path)
 
         # Replace the placeholders with the chosen data
         context = {
