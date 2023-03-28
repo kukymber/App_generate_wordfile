@@ -37,7 +37,7 @@ class App(tk.Tk):
 
         # Creating the fields for passport series and number
         self.passport_series_number_fields()
-        # self.selected_seria = []        self.passport_number_fields()
+        self.passport_number_fields()
 
         # Adding the canvas for the image
         self.canvas = tk.Canvas(self, width=400, height=600)
@@ -236,7 +236,7 @@ class App(tk.Tk):
         # Load the image using PIL library
         image = Image.open(self.image_path)
         # Resize the image to fit the canvas
-        image = image.resize((400, 600), Image.ANTIALIAS)
+        image = image.resize((400, 600), Image.LANCZOS)
         # Convert the PIL image to tkinter-compatible format
         photo = ImageTk.PhotoImage(image)
         # Add the image to the canvas
@@ -250,7 +250,7 @@ class App(tk.Tk):
 
     def generate_word_file(self):
         selected_items = [combo.get() for combo in self.name_combos]
-        # Read the template file
+        # Read the template filepip install auto-py-to-exe
         template = DocxTemplate(self.template_file_path)
 
         # Replace the placeholders with the chosen data
